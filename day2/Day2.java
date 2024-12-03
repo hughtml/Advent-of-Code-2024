@@ -15,7 +15,13 @@ public class Day2 {
     private static ArrayList<ArrayList<Integer>> reports = new ArrayList<>();
     public static void main(String[] args) {
         readInput();
-        System.out.println(reports);
+        int safeReports = 0;
+        for (ArrayList<Integer> report : reports) {
+            if (safeOrUnsafe(report)) {
+                safeReports++;
+            }
+        }
+        System.out.println("There are " + safeReports + " safe reports.");
     }
 
     /**
@@ -40,6 +46,19 @@ public class Day2 {
             exception.printStackTrace();
         }
 
+    }
+
+    /**
+     * Method to check if a report is safe
+     * @param levels The levels in the report
+     * @return If the report is safe
+     */
+    public static boolean safeOrUnsafe(ArrayList<Integer> levels) {
+        boolean safe = false;
+        if ((allDecreasing(levels) || allIncreasing(levels)) && safeDifference(levels)) {
+            safe = true;
+        }
+        return safe;
     }
 
     /**
@@ -72,5 +91,22 @@ public class Day2 {
             }
         }
         return increasing;
+    }
+
+    /**
+     * Method to check if the levels in a report have a safe difference between each other
+     * @param levels The levels to check
+     * @return Boolean value to represent if all levels have a safe difference between each other
+     */
+    public static boolean safeDifference(ArrayList<Integer> levels) {
+        boolean safeDifference = true;
+        for (int i = 0; i < levels.size() - 1; i++) {
+            int difference = Math.abs(levels.get(i) - levels.get(i + 1));
+            if (difference < 1 || difference > 3) {
+                safeDifference = false;
+                break;
+            }
+        }
+        return safeDifference;
     }
 }
