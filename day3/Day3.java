@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class to model a solution for Day 3 in Advent of Code 2024
@@ -13,9 +15,15 @@ import java.util.ArrayList;
 public class Day3 {
 
     private static ArrayList<String> corruptedInput = new ArrayList<>();
+    private static ArrayList<String> foundInstructions = new ArrayList<>();
     public static void main(String[] args) {
         readInput();
         System.out.println(corruptedInput);
+        
+        for (String input : corruptedInput) {
+            findInstructions(input);
+        }
+        System.out.println(foundInstructions);
     }
 
     /**
@@ -35,6 +43,19 @@ public class Day3 {
             exception.printStackTrace();
         }
 
+    }
+
+    /**
+     * Method to find and extract any instructions from the corruption and put them in the specified ArrayList
+     * @param input The corrupted input to check
+     */
+    public static void findInstructions(String input) {
+        Pattern pattern = Pattern.compile("mul\\((\\d{1}|\\d{2}|\\d{3}),(\\d{1}|\\d{2}|\\d{3})\\)");
+        Matcher matcher = pattern.matcher(input);
+
+        while (matcher.find()) {
+            foundInstructions.add(input.substring(matcher.start(), matcher.end()));
+        }
     }
 
 }
