@@ -13,15 +13,21 @@ import java.util.ArrayList;
 public class Day2 {
 
     private static ArrayList<ArrayList<Integer>> reports = new ArrayList<>();
+    private static ArrayList<ArrayList<Integer>> safeReports = new ArrayList<>();
+    private static ArrayList<ArrayList<Integer>> unsafeReports = new ArrayList<>();
     public static void main(String[] args) {
         readInput();
-        int safeReports = 0;
         for (ArrayList<Integer> report : reports) {
             if (safeOrUnsafe(report)) {
-                safeReports++;
+                safeReports.add(report);
+            } else {
+                unsafeReports.add(report);
             }
         }
-        System.out.println("There are " + safeReports + " safe reports.");
+        System.out.println("There are " + safeReports.size() + " safe reports.");
+
+        problemDampener();
+        System.out.println("Following use of the Problem Dampener, there are now " + safeReports.size() + " safe reports.");
     }
 
     /**
@@ -108,5 +114,43 @@ public class Day2 {
             }
         }
         return safeDifference;
+    }
+
+    /**
+     * Method to act as the Problem Dampener within the reactor
+     */
+    public static void problemDampener() {
+        int i = 0;
+        while (i < unsafeReports.size()) {
+
+            boolean safe = false;
+            int j = 0;
+            while (j < unsafeReports.get(i).size() && !safe) {
+                //Create a temp report and copy the values
+                ArrayList<Integer> tempReport = new ArrayList<>();
+                for (Integer level : unsafeReports.get(i)) {
+                    tempReport.add(level);
+                }
+                //Remove the current level being checked
+                tempReport.remove(j);
+                //If removing the current level makes the report safe...
+                if (safeOrUnsafe(tempReport)) {
+                    safe = true;
+                }
+                j++;
+            }
+
+            if (safe) {
+                //If the report's now safe, move back a space and move that report to the safe pile
+                i--;
+                safeReports.add(unsafeReports.remove(i + 1));
+                if (i < 0) {
+                    i++;
+                }
+            } else {
+                i++;
+            }
+
+        }
     }
 }
